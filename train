@@ -1,0 +1,27 @@
+import os
+import numpy as np
+import cv2
+from PIL import Image
+
+recongnizer=cv2.face.LBPHFaceRecognizer_create()
+path='Dataset'
+
+def getimageid(path):
+    imagepaths=[os.path.join(path,f) for f in os.listdir(path)]
+    faces=[]
+    ids=[]
+    for imgpath in imagepaths:
+        faceimg=cv2.imread(imgpath,0)
+        facearray=np.array(faceimg,'uint8')
+        id=int(os.path.split(imgpath)[-1].split('.')[1])
+        faces.append(facearray)
+        ids.append(id)
+        cv2.imshow("training",facearray)
+        cv2.waitKey(10)
+    return ids,faces
+
+ids,faces=getimageid(path)
+recongnizer.train(faces,np.array(ids))
+recongnizer.save('reconizer/trainingdata.yml')
+cv2.destroyAllWindows()
+
